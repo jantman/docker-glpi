@@ -1,0 +1,1 @@
+*/2 * * * * www-data /usr/bin/php /app/glpi/front/cron.php &>/dev/null
