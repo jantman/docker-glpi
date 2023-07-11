@@ -7,6 +7,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt update \
     && apt install --yes --no-install-recommends \
         wget \
+        bzip2 \
         ca-certificates \
         cron \
         apache2 \
@@ -34,6 +35,9 @@ RUN a2enmod rewrite
 
 ENV GLPI_VERSION 10.0.8
 ENV GLPI_SHA512SUM 6bbd382780033ef264df37c582130b46e9b22eaae61a8eee1d15431ccb2ae9b31dd1f9be094c10be3b3533177813ba94c45cb714ffc50ee9148c8c8001e0e502
+ENV FUSION_VERSION '10.0.6+1.1'
+ENV FUSION_URL_VERSION '10.0.6%2B1.1'
+ENV FUSION_SHA512SUM 8cee640f942d0561bb58739325be884d81c6813de5b3d0065046a9eec01fa0c4bd9be915c3f47942a3b27766b72607a42646ce1d4d63b544de4491d30f365b31
 
 RUN mkdir -p /app/log /app/data /app/config
 RUN wget -P /tmp/ https://github.com/glpi-project/glpi/releases/download/${GLPI_VERSION}/glpi-${GLPI_VERSION}.tgz && \
@@ -52,6 +56,11 @@ RUN install -m 0644 -o root -g root /tmp/files/apache2.conf /etc/apache2/apache2
     chown -R www-data:www-data /app && \
     chmod -R 775 /app && \
     rm -rf /app/glpi/install
+RUN wget -P /tmp/ https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi${FUSION_URL_VERSION}/fusioninventory-${FUSION_VERSION}.tar.bz2 && \
+    echo "${FUSION_SHA512SUM}  /tmp/fusioninventory-${FUSION_VERSION}.tar.bz2" > /tmp/fusioninventory.sha512sum && \
+    sha512sum -c /tmp/fusioninventory.sha512sum && \
+    mkdir -p /app/glpi/plugins && \
+    tar -xjvf "/tmp/fusioninventory-${FUSION_VERSION}.tar.bz2" -C /app/glpi/plugins/
 
 VOLUME /app/data
 VOLUME /app/log
