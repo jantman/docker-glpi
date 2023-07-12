@@ -1411,6 +1411,10 @@ class PluginFusioninventoryFormatconvert {
                if ($array_tmp['virtualmachinetypes_id'] == 'jail') {
                   $array_tmp['uuid'] = $a_inventory['Computer']['uuid']."-".$array_tmp['name'];
                }
+               // Hack for Docker image - docker doesn't have a comment, and Fusion has nowhere for the image
+               if ($array_tmp['virtualmachinetypes_id'] == 'docker') {
+                  $array_tmp['comment'] = $a_virtualmachines['IMAGE'];
+               }
 
                $a_inventory['virtualmachine'][] = $array_tmp;
             }
