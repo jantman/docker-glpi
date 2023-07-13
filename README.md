@@ -1,5 +1,19 @@
+# jantman fork of jr0w3/docker-glpi
 
-![Docker Pulls](https://img.shields.io/docker/pulls/jr0w3/glpi) ![Docker Stars](https://img.shields.io/docker/stars/jr0w3/glpi) ![Image Size](https://img.shields.io/docker/image-size/jr0w3/glpi?sort=date)
+This is a fork of https://github.com/jr0w3/docker-glpi with the following major changes:
+
+* Image is now predictable/repeatable; all software is downloaded and installed during the Docker build, in accordance with [Docker development best practices](https://docs.docker.com/develop/dev-best-practices/), [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/), and [The Twelve-Factor App/](https://12factor.net/). Restarting the container, or even recreating the container from the same tag, will not result in any changes to the running software.
+* GLPI 10.0.9, latest version
+* Volumes for config, data, and logs
+* Apache configured for proper root directory
+* [FusionInventory](https://fusioninventory.org/) `10.0.6+1.1` installed
+  * Patched to install with GLPI 10.0.9
+* **NOTE:** I _am_ still running `cron` in the same container as Apache. Sorry.
+
+## Post-Installation Notes
+
+* You must configure FusionInventory after installation, according to https://documentation.fusioninventory.org/FusionInventory_for_GLPI/installation/
+* You must also enable Inventory via `/front/inventory.conf.php`
 
 # Quick reference
 

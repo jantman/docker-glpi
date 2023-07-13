@@ -11,7 +11,7 @@ services:
     restart: always
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:
-      - db:/var/lib/mysql
+      - ./db:/var/lib/mysql
     environment:
 # It is strongly recommended to change these identifiers by other more secure ones.
 # Don't forget to report them in the app service below.
@@ -22,14 +22,16 @@ services:
 
 #GLPI Container
   app:
-    image: jr0w3/glpi
+    image: jantman/docker-glpi
     restart: always
     ports:
       - 80:80
     links:
       - db
     volumes:
-      - data:/app/data
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./log:/app/log
     environment:
       - MYSQL_PASSWORD=psw
       - MYSQL_DATABASE=glpi
