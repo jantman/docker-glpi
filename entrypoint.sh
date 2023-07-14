@@ -17,16 +17,6 @@ else
 		touch /app/data/.db-installed
 fi
 
-if [[ -e /app/data/.fusion-installed ]]; then
-	echo "FusionInventory already installed"
-else
-	cd /app/glpi && \
-		echo "Running plugin installation" && \
-		php bin/console glpi:plugin:install --username=glpi fusioninventory && \
-		php bin/console glpi:plugin:activate fusioninventory && \
-		touch /app/data/.fusion-installed
-fi
-
 #Start cron service
 service cron start
 
