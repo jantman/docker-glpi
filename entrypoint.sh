@@ -20,5 +20,7 @@ fi
 #Start cron service
 service cron start
 
+echo "Starting apache..."
+
 #Run apache in foreground mode.
 /usr/sbin/apache2ctl -D FOREGROUND

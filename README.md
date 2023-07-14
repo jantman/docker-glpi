@@ -6,17 +6,18 @@ This is a fork of https://github.com/jr0w3/docker-glpi with the following major 
 * GLPI 10.0.9, latest version
 * Volumes for config, data, and logs
 * Apache configured for proper root directory
-* [FusionInventory](https://fusioninventory.org/) `10.0.6+1.1` installed
-  * Patched to install with GLPI 10.0.9
 * GLPI `src/Inventory/Inventory.php` patched for some Docker modifications, namely:
   * Docker containers (virtualmachines) have their `image` field (discarded by GLPI) copied to the `comment` field (kept by GLPI)
   * Images for running Docker containers are also reported in the Software category, with the "publisher" field set to `docker`
 * **NOTE:** I _am_ still running `cron` in the same container as Apache. Sorry.
+* Apache access logs to STDOUT and error logs to STDERR
 
-## Post-Installation Notes
+## Installation
 
-* You must configure FusionInventory after installation, according to https://documentation.fusioninventory.org/FusionInventory_for_GLPI/installation/
-* You must also enable Inventory via `/front/inventory.conf.php`
+1. Make sure the DB install finishes successfully, via the container logs; it can take quite a bit of time. The last line of container output before starting Apache in the foreground should be `Starting apache...`
+2. Point a browser to the web UI HTTP address for the container. Follow the installation process. Default credentials are username `glpi` and password `glpi`.
+3. Browse to `/front/inventory.conf.php`, click the checkbox next to "Enable inventory", and save.
+
 
 # Quick reference
 
