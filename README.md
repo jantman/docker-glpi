@@ -26,6 +26,8 @@ This is a fork of https://github.com/jr0w3/docker-glpi with the following major 
        * Set the URL, enable everything, save
     * Administration -> Users - for "normal" and "post-only", select them, click Actions, select "Put in Trash Bin"
     * Administration -> Inventory - check "Enable inventory" and then Save
+    * Top right corner, click your profile icon, "My Settings", set your Time zone and Save.
+    * Setup -> General -> Default Values -> Personalization -> Timezone, set your Time zone and Save.
 
 # Quick reference
 
