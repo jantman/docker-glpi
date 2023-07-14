@@ -108,6 +108,62 @@ class Inventory
         return $this;
     }
 
+    public function jantmanDebug($message)
+    {
+        file_put_contents(GLPI_LOG_DIR.'/glpi-jantmandebug.log',
+            "\n".time().': ' . $message,
+            FILE_APPEND);
+    }
+
+    /**
+     * Docker hack - copy "image" to "comment" field on docker virtualmachines,
+     * and also add Docker images to the softwares inventory.
+     *
+     * @param object $data  The original Inventory daya
+     * @return object
+     */
+    public function jantmanDockerHack($mydata): object
+    {
+        $this->jantmanDebug('enter jantmanDockerHack()');
+        if (isset($mydata->content)) {
+            $this->jantmanDebug('mydata->content is set');
+        }
+        if (isset($mydata->content->virtualmachines)) {
+            $this->jantmanDebug('mydata->content->virtualmachines is set');
+            foreach ($mydata->content->virtualmachines as $myvm) {
+                $this->jantmanDebug('myvm: ' . print_r($myvm, true));
+                if ($myvm['vmtype'] == 'docker' && isset($myvm['image'])) {
+                    $this->jantmanDebug('docker and isset (index)');
+                    $myvm['comment'] = $myvm['image'];
+                    if (str_contains($myvm['image'], ':')) {
+                        $parts = explode(':', $myvm['image'], 2);
+                        $tmparr = [
+                            'name'      => $parts[0],
+                            'version'   => $parts[1],
+                            'publisher' => 'docker',
+                            'from'      => 'docker'
+                        ];
+                        $mydata['softwares'][] = $tmparr;
+                    }
+                } elseif ($myvm->vmtype == 'docker' && isset($myvm->image) {
+                    $this->jantmanDebug('docker and isset (properties)');
+                    $myvm->comment = $myvm->image;
+                    if (str_contains($myvm->image, ':')) {
+                        $parts = explode(':', $myvm->image, 2);
+                        $tmparr = [
+                            'name'      => $parts[0],
+                            'version'   => $parts[1],
+                            'publisher' => 'docker',
+                            'from'      => 'docker'
+                        ];
+                        $mydata->content->softwares[] = $tmparr;
+                    }
+                }
+            }
+        }
+        return $mydata;
+    }
+
     /**
      * Set data, and convert them if we're using legacy format
      *
@@ -143,6 +199,8 @@ class Inventory
             $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, 'json_');
             $contentdata = json_encode($data, JSON_PRETTY_PRINT);
         }
+
+        $data = $this->jantmanDockerHack($data);
 
         try {
             $converter->validate($data);

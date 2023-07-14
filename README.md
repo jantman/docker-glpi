@@ -8,6 +8,9 @@ This is a fork of https://github.com/jr0w3/docker-glpi with the following major 
 * Apache configured for proper root directory
 * [FusionInventory](https://fusioninventory.org/) `10.0.6+1.1` installed
   * Patched to install with GLPI 10.0.9
+* GLPI `src/Inventory/Inventory.php` patched for some Docker modifications, namely:
+  * Docker containers (virtualmachines) have their `image` field (discarded by GLPI) copied to the `comment` field (kept by GLPI)
+  * Images for running Docker containers are also reported in the Software category, with the "publisher" field set to `docker`
 * **NOTE:** I _am_ still running `cron` in the same container as Apache. Sorry.
 
 ## Post-Installation Notes

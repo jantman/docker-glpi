@@ -30,6 +30,7 @@ RUN apt update \
         php-zip \
         php-bz2 \
         php-xdebug \
+    && apt upgrade \
     && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
@@ -62,6 +63,7 @@ RUN install -m 0644 -o root -g root /tmp/files/apache2.conf /etc/apache2/apache2
     install -m 0644 -o root -g root /tmp/files/glpi-cron /etc/cron.d/glpi && \
     install -m 0644 -o root -g root /tmp/files/downstream.php /app/glpi/inc/downstream.php && \
     install -m 0644 -o root -g root /tmp/files/local_define.php /app/local_define.php && \
+    install -m 0644 -o root -g root /tmp/files/Inventory.php /app/glpi/src/Inventory/Inventory.php && \
     rm -Rf /tmp/* && \
     chown -R www-data:www-data /app && \
     chmod -R 775 /app
