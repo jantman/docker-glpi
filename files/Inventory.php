@@ -108,13 +108,6 @@ class Inventory
         return $this;
     }
 
-    public function jantmanDebug($message)
-    {
-        file_put_contents(GLPI_LOG_DIR.'/glpi-jantmandebug.log',
-            "\n".time().': ' . $message,
-            FILE_APPEND);
-    }
-
     /**
      * Docker hack - copy "image" to "comment" field on docker virtualmachines,
      * and also add Docker images to the softwares inventory.
@@ -124,25 +117,20 @@ class Inventory
      */
     public function jantmanDockerHack($mydata): object
     {
-        $this->jantmanDebug('enter jantmanDockerHack()');
         if (isset($mydata->content)) {
-            $this->jantmanDebug('mydata->content is set');
-        }
-        if (isset($mydata->content->virtualmachines)) {
-            $this->jantmanDebug('mydata->content->virtualmachines is set');
-            foreach ($mydata->content->virtualmachines as $myvm) {
-                $this->jantmanDebug('myvm: ' . print_r($myvm, true));
-                if ($myvm->vmtype == 'docker' && isset($myvm->image)) {
-                    $this->jantmanDebug('docker and isset (index)');
-                    $myvm->comment = $myvm->image;
-                    if (str_contains($myvm->image, ':')) {
-                        $parts = explode(':', $myvm->image, 2);
-                        $tmparr            = new \stdClass();
-                        $tmparr->name      = $parts[0];
-                        $tmparr->version   = $parts[1];
-                        $tmparr->publisher = 'docker';
-                        $tmparr->from      = 'docker';
-                        $mydata->content->softwares[] = $tmparr;
+            if (isset($mydata->content->virtualmachines)) {
+                foreach ($mydata->content->virtualmachines as $myvm) {
+                    if ($myvm->vmtype == 'docker' && isset($myvm->image)) {
+                        $myvm->comment = $myvm->image;
+                        if (str_contains($myvm->image, ':')) {
+                            $parts = explode(':', $myvm->image, 2);
+                            $tmparr            = new \stdClass();
+                            $tmparr->name      = $parts[0];
+                            $tmparr->version   = $parts[1];
+                            $tmparr->publisher = 'docker';
+                            $tmparr->from      = 'docker';
+                            $mydata->content->softwares[] = $tmparr;
+                        }
                     }
                 }
             }
@@ -186,12 +174,6 @@ class Inventory
         }
 
         $data = $this->jantmanDockerHack($data);
-        /*
-        $this->jantmanDebug('before file_put_contents');
-        $tmpdata = json_encode($data, JSON_PRETTY_PRINT);
-        file_put_contents(GLPI_LOG_DIR.'/glpi-jantman-inventory.json', $tmpdata);
-        $this->jantmanDebug('after file_put_contents');
-        */
 
         try {
             $converter->validate($data);
