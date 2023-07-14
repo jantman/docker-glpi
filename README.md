@@ -16,8 +16,16 @@ This is a fork of https://github.com/jr0w3/docker-glpi with the following major 
 
 1. Make sure the DB install finishes successfully, via the container logs; it can take quite a bit of time. The last line of container output before starting Apache in the foreground should be `Starting apache...`
 2. Point a browser to the web UI HTTP address for the container. Follow the installation process. Default credentials are username `glpi` and password `glpi`.
-3. Browse to `/front/inventory.conf.php`, click the checkbox next to "Enable inventory", and save.
-
+3. Configure GLPI as desired. My usual process is:
+   * Setup -> General -> General setup
+       * Set "URL of the application"
+       * Set text in login box to `Log in with username "tech" and password "tech"`
+       * Set "Time to allow "Remember Me"" to 60 days
+       * Save
+    * Setup -> General -> API
+       * Set the URL, enable everything, save
+    * Administration -> Users - for "normal" and "post-only", select them, click Actions, select "Put in Trash Bin"
+    * Administration -> Inventory - check "Enable inventory" and then Save
 
 # Quick reference
 
