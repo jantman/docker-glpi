@@ -132,30 +132,16 @@ class Inventory
             $this->jantmanDebug('mydata->content->virtualmachines is set');
             foreach ($mydata->content->virtualmachines as $myvm) {
                 $this->jantmanDebug('myvm: ' . print_r($myvm, true));
-                if ($myvm['vmtype'] == 'docker' && isset($myvm['image'])) {
+                if ($myvm->vmtype == 'docker' && isset($myvm->image)) {
                     $this->jantmanDebug('docker and isset (index)');
-                    $myvm['comment'] = $myvm['image'];
-                    if (str_contains($myvm['image'], ':')) {
-                        $parts = explode(':', $myvm['image'], 2);
-                        $tmparr = [
-                            'name'      => $parts[0],
-                            'version'   => $parts[1],
-                            'publisher' => 'docker',
-                            'from'      => 'docker'
-                        ];
-                        $mydata['softwares'][] = $tmparr;
-                    }
-                } elseif ($myvm->vmtype == 'docker' && isset($myvm->image) {
-                    $this->jantmanDebug('docker and isset (properties)');
                     $myvm->comment = $myvm->image;
                     if (str_contains($myvm->image, ':')) {
                         $parts = explode(':', $myvm->image, 2);
-                        $tmparr = [
-                            'name'      => $parts[0],
-                            'version'   => $parts[1],
-                            'publisher' => 'docker',
-                            'from'      => 'docker'
-                        ];
+                        $tmparr            = new \stdClass();
+                        $tmparr->name      = $parts[0];
+                        $tmparr->version   = $parts[1];
+                        $tmparr->publisher = 'docker';
+                        $tmparr->from      = 'docker';
                         $mydata->content->softwares[] = $tmparr;
                     }
                 }
@@ -174,7 +160,6 @@ class Inventory
      */
     public function setData($data, $format = Request::JSON_MODE): bool
     {
-
         // Write inventory file
         if (!is_dir(GLPI_INVENTORY_DIR)) {
             mkdir(GLPI_INVENTORY_DIR);
@@ -201,6 +186,12 @@ class Inventory
         }
 
         $data = $this->jantmanDockerHack($data);
+        /*
+        $this->jantmanDebug('before file_put_contents');
+        $tmpdata = json_encode($data, JSON_PRETTY_PRINT);
+        file_put_contents(GLPI_LOG_DIR.'/glpi-jantman-inventory.json', $tmpdata);
+        $this->jantmanDebug('after file_put_contents');
+        */
 
         try {
             $converter->validate($data);
